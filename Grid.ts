@@ -9,7 +9,7 @@ export class Grid {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    // Linii de grilă stil "Cyber-Grid"
+   
     ctx.strokeStyle = "rgba(0, 255, 255, 0.05)";
     ctx.lineWidth = 1;
 
@@ -22,27 +22,27 @@ export class Grid {
         if (this.cells[r][c] !== 0) {
           const isTitan = this.cells[r][c] === -1;
           
-          // 1. Efect de Neon (Glow)
+          
           ctx.shadowBlur = isTitan ? 15 : 10;
           ctx.shadowColor = isTitan ? "#ff00ff" : "#00ffff";
 
-          // 2. Gradient pentru efect de sticlă/cristal
+          
           const gradient = ctx.createLinearGradient(x, y, x + this.cellSize, y + this.cellSize);
           if (isTitan) {
-            gradient.addColorStop(0, "#4a00e0"); // Deep Purple
-            gradient.addColorStop(1, "#ff00ff"); // Neon Magenta
+            gradient.addColorStop(0, "#4a00e0"); 
+            gradient.addColorStop(1, "#ff00ff"); 
           } else {
-            gradient.addColorStop(0, "#008080"); // Teal
-            gradient.addColorStop(1, "#00ffff"); // Cyan
+            gradient.addColorStop(0, "#008080"); 
+            gradient.addColorStop(1, "#00ffff"); 
           }
           
           ctx.fillStyle = gradient;
           this.drawRoundedRect(ctx, x + 3, y + 3, this.cellSize - 6, this.cellSize - 6, 6);
           ctx.fill();
 
-          ctx.shadowBlur = 0; // Reset shadow pt performanță
+          ctx.shadowBlur = 0; 
 
-          // 3. Reflexie "Glossy" futuristă
+          
           ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
           ctx.beginPath();
           ctx.moveTo(x + 8, y + 8);
@@ -51,7 +51,7 @@ export class Grid {
           ctx.fill();
 
           if (isTitan) {
-            // Nucleu Titan (Orbită)
+            
             ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -91,18 +91,18 @@ export class Grid {
     }
   }
 
-  // MODIFICARE: Returnează și celulele distruse pentru explozie
+
   clearLines(): { points: number, totalCleared: number, destroyedCells: any[] } {
     let rowsToClear: number[] = [];
     let colsToClear: number[] = [];
     let destroyedCells: any[] = [];
 
-    // Detecție rânduri
+   
     for (let r = 0; r < this.size; r++) {
       if (this.cells[r].every(cell => cell !== 0)) rowsToClear.push(r);
     }
 
-    // Detecție coloane
+  
     for (let c = 0; c < this.size; c++) {
       let colFull = true;
       for (let r = 0; r < this.size; r++) {
@@ -112,8 +112,7 @@ export class Grid {
     }
 
     let titanPoints = 0;
-    const cellsToEmpty = new Set<string>(); // Folosim Set ca să nu dublăm celulele la intersecții
-
+    const cellsToEmpty = new Set<string>(); 
     rowsToClear.forEach(r => {
       for (let c = 0; c < this.size; c++) cellsToEmpty.add(`${r},${c}`);
     });
@@ -125,7 +124,7 @@ export class Grid {
       const [r, c] = coord.split(',').map(Number);
       const val = this.cells[r][c];
 
-      // Colectăm datele pentru explozie
+     
       destroyedCells.push({
         x: c * this.cellSize,
         y: r * this.cellSize,
@@ -133,7 +132,7 @@ export class Grid {
       });
 
       if (val === -1) {
-        this.cells[r][c] = 1; // Titanul devine normal, nu dispare
+        this.cells[r][c] = 1; 
         titanPoints += 50;
       } else {
         this.cells[r][c] = 0;
@@ -154,9 +153,9 @@ export class Grid {
           const targetR = gridY + r;
           const targetC = gridX + c;
 
-          // Verificăm marginile tablei
+         
           if (targetR < 0 || targetR >= this.size || targetC < 0 || targetC >= this.size) return false;
-          // Verificăm dacă locul e deja ocupat
+         
           if (this.cells[targetR][targetC] !== 0) return false;
         }
       }
