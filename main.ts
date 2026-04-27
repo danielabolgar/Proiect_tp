@@ -4,7 +4,7 @@ import { Piece } from './Piece'
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
-// --- STATE JOC ---
+
 let scor = 0;
 let nivel = 1;
 let mutariEfectuate = 0;
@@ -18,7 +18,7 @@ let highScore = Number(localStorage.getItem('zenblocks_highscore')) || 0;
 let offsetX = 0;
 let offsetY = 0;
 
-// --- INTERFAȚĂ HTML ---
+
 app.innerHTML = `
   <div class="game-container">
     <div id="startScreen" class="overlay">
@@ -46,7 +46,7 @@ const canvas = document.querySelector<HTMLCanvasElement>('#gameCanvas')!;
 const ctx = canvas.getContext('2d')!;
 const grid = new Grid(40);
 
-// --- LOGICĂ START & SALVARE ---
+
 document.getElementById('startButton')?.addEventListener('click', () => {
     inMeniu = false;
     document.getElementById('startScreen')!.style.display = 'none';
@@ -73,7 +73,7 @@ function updateUI() {
     if (shiftEl) shiftEl.innerText = (prag - (mutariEfectuate % prag)).toString();
 }
 
-// --- SISTEM PARTICULE (EXPLOZIE) ---
+
 interface Particle {
   x: number; y: number; vx: number; vy: number; life: number; color: string;
 }
@@ -111,9 +111,9 @@ function drawParticles(ctx: CanvasRenderingContext2D) {
   ctx.shadowBlur = 0;
 }
 
-// --- EVENIMENTE INTERACȚIUNE ---
+
 canvas.addEventListener('pointerdown', (e: PointerEvent) => {
-  if (inMeniu) return; // Blocăm dacă ești în meniu
+  if (inMeniu) return; 
   if (jocTerminat) {
     location.reload();
     return;
@@ -185,12 +185,12 @@ function handleMoveLogic() {
     updateUI();
 }
 
-// --- RENDER LOOP ---
+
 function gameLoop() {
   ctx.fillStyle = '#020204';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Update particule (le lăsăm să zboare și în meniu pentru atmosferă)
+  
   updateParticles();
   drawParticles(ctx);
 
