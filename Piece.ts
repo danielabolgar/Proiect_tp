@@ -10,44 +10,44 @@ export class Piece {
   constructor() {
     this.shape = this.generateRandomShape();
     
-    // 20% șansă să conțină un element Titan
+   
     this.isTitan = Math.random() < 0.2; 
     if (this.isTitan) {
       this.injectTitan();
     }
 
-    // Culori neon din constante sau albastru metalic pentru Titan
+    
     this.color = this.isTitan ? '#457B9D' : COLORS[Math.floor(Math.random() * COLORS.length)];
   }
 
   private generateRandomShape(): number[][] {
     const models = [
-      // --- CLASICE (7) ---
-      [[1, 1], [1, 1]],             // Pătrat 2x2
-      [[1, 1, 1, 1]],               // Linie Orizontală 4
-      [[1], [1], [1], [1]],         // Linie Verticală 4
-      [[1, 1, 0], [0, 1, 1]],       // Z Shape
-      [[0, 1, 1], [1, 1, 0]],       // S Shape
-      [[1, 1, 1], [0, 1, 0]],       // T Shape
-      [[1, 0, 0], [1, 1, 1]],       // L Shape
       
-      // --- MINIMALISTE (5) ---
-      [[1]],                        // Punct (1x1)
-      [[1, 1]],                     // Linie 2
-      [[1], [1]],                  // Linie verticală 2
-      [[1, 1], [1, 0]],             // Mini L
-      [[1, 1, 1]],                  // Linie 3
+      [[1, 1], [1, 1]],             
+      [[1, 1, 1, 1]],              
+      [[1], [1], [1], [1]],         
+      [[1, 1, 0], [0, 1, 1]],      
+      [[0, 1, 1], [1, 1, 0]],       
+      [[1, 1, 1], [0, 1, 0]],       
+      [[1, 0, 0], [1, 1, 1]],      
+      
+     
+      [[1]],                        
+      [[1, 1]],                   
+      [[1], [1]],                 
+      [[1, 1], [1, 0]],           
+      [[1, 1, 1]],                  
 
-      // --- COMPLEXE / GIGANT (9) ---
-      [[1, 1, 1], [1, 1, 1], [1, 1, 1]], // Pătrat Gigant 3x3
-      [[0, 1, 0], [1, 1, 1], [0, 1, 0]], // Cruce / Plus
-      [[1, 0, 1], [1, 1, 1]],            // U-shape
-      [[1, 1, 1, 1, 1]],                 // Linie Orizontală 5
-      [[1], [1], [1], [1], [1]],         // Linie Verticală 5
-      [[1, 1, 1], [1, 0, 0], [1, 0, 0]], // L Mare 3x3
-      [[1, 1, 1], [0, 0, 1], [0, 0, 1]], // J Mare 3x3
-      [[1, 1, 0], [0, 1, 0], [0, 1, 1]], // Scară / Zig-zag
-      [[1, 1, 1], [1, 0, 1]]             // Poartă / Pod
+      
+      [[1, 1, 1], [1, 1, 1], [1, 1, 1]], 
+      [[0, 1, 0], [1, 1, 1], [0, 1, 0]], 
+      [[1, 0, 1], [1, 1, 1]],           
+      [[1, 1, 1, 1, 1]],                
+      [[1], [1], [1], [1], [1]],         
+      [[1, 1, 1], [1, 0, 0], [1, 0, 0]],
+      [[1, 1, 1], [0, 0, 1], [0, 0, 1]], 
+      [[1, 1, 0], [0, 1, 0], [0, 1, 1]], 
+      [[1, 1, 1], [1, 0, 1]]             
     ];
     return models[Math.floor(Math.random() * models.length)];
   }
@@ -56,14 +56,14 @@ export class Piece {
     for (let r = 0; r < this.shape.length; r++) {
       for (let c = 0; c < this.shape[r].length; c++) {
         if (this.shape[r][c] === 1) {
-          this.shape[r][c] = -1; // Primul bloc găsit devine Titan
+          this.shape[r][c] = -1; 
           return;
         }
       }
     }
   }
 
-  // Funcție ajutătoare pentru designul de cristal/neon
+ 
   private drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -91,18 +91,18 @@ export class Piece {
           const blockY = offsetY + r * cellSize;
           const isBlockTitan = this.shape[r][c] === -1;
 
-          // --- STIL NEON / CRYSTAL ---
+         
           ctx.shadowBlur = isBlockTitan ? 15 : 10;
           ctx.shadowColor = isBlockTitan ? "#ff00ff" : this.color;
 
-          // Gradient pentru fiecare bloc
+         
           const grad = ctx.createLinearGradient(blockX, blockY, blockX + cellSize, blockY + cellSize);
           if (isBlockTitan) {
             grad.addColorStop(0, "#4a00e0");
             grad.addColorStop(1, "#ff00ff");
           } else {
             grad.addColorStop(0, this.color);
-            grad.addColorStop(1, "#ffffff"); // Reflexie de lumină
+            grad.addColorStop(1, "#ffffff"); 
           }
 
           ctx.fillStyle = grad;
@@ -111,7 +111,7 @@ export class Piece {
 
           ctx.shadowBlur = 0;
 
-          // Efect de nucleu pentru Titan
+         
           if (isBlockTitan) {
              ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
              ctx.lineWidth = 2;
@@ -120,7 +120,7 @@ export class Piece {
              ctx.stroke();
           }
           
-          // Reflexie de sticlă (diagonală)
+         
           ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
           ctx.beginPath();
           ctx.moveTo(blockX + 6, blockY + 6);
