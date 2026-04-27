@@ -1,0 +1,206 @@
+export class Grid {
+  size: number = 10;
+  cells: number[][];
+  cellSize: number;
+
+  constructor(cellSize: number = 40) {
+    this.cellSize = cellSize;
+    this.cells = Array.from({ length: 10 }, () => Array(10).fill(0));
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    // Linii de grilă stil "Cyber-Grid"
+    ctx.strokeStyle = "rgba(0, 255, 255, 0.05)";
+    ctx.lineWidth = 1;
+
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        const x = c * this.cellSize;
+        const y = r * this.cellSize;
+        ctx.strokeRect(x, y, this.cellSize, this.cellSize);
+
+        if (this.cells[r][c] !== 0) {
+          const isTitan = this.cells[r][c] === -1;
+          
+          // 1. Efect de Neon (Glow)
+          ctx.shadowBlur = isTitan ? 15 : 10;
+          ctx.shadowColor = isTitan ? "#ff00ff" : "#00ffff";
+
+          // 2. Gradient pentru efect de sticlă/cristal
+          const gradient = ctx.createLinearGradient(x, y, x + this.cellSize, y + this.cellSize);
+          if (isTitan) {
+            gradient.addColorStop(0, "#4a00e0"); // Deep Purple
+            gradient.addColorStop(1, "#ff00ff"); // Neon Magenta
+          } else {
+            gradient.addColorStop(0, "#008080"); // Teal
+            gradient.addColorStop(1, "#00ffff"); // Cyan
+          }
+          
+          ctx.fillStyle = gradient;
+          this.drawRoundedRect(ctx, x + 3, y + 3, this.cellSize - 6, this.cellSize - 6, 6);
+          ctx.fill();
+
+          ctx.shadowBlur = 0; // Reset shadow pt performanță
+
+          // 3. Reflexie "Glossy" futuristă
+          ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
+          ctx.beginPath();
+          ctx.moveTo(x + 8, y + 8);
+          ctx.lineTo(x + this.cellSize - 15, y + 8);
+          ctx.lineTo(x + 8, y + this.cellSize - 15);
+          ctx.fill();
+
+          if (isTitan) {
+            // Nucleu Titan (Orbită)
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x + this.cellSize / 2, y + this.cellSize / 2, 6, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  private drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  applyGravity() {
+    for (let c = 0; c < this.size; c++) {
+      let emptyRow = this.size - 1;
+      for (let r = this.size - 1; r >= 0; r--) {
+        if (this.cells[r][c] !== 0) {
+          const val = this.cells[r][c];
+          this.cells[r][c] = 0;
+          this.cells[emptyRow][c] = val;
+          emptyRow--;
+        }
+      }
+    }
+  }
+
+  // MODIFICARE: Returnează și celulele distruse pentru explozie
+  clearLines(): { points: number, totalCleared: number, destroyedCells: any[] } {
+    let rowsToClear: number[] = [];
+    let colsToClear: number[] = [];
+    let destroyedCells: any[] = [];
+
+    // Detecție rânduri
+    for (let r = 0; r < this.size; r++) {
+      if (this.cells[r].every(cell => cell !== 0)) rowsToClear.push(r);
+    }
+
+    // Detecție coloane
+    for (let c = 0; c < this.size; c++) {
+      let colFull = true;
+      for (let r = 0; r < this.size; r++) {
+        if (this.cells[r][c] === 0) { colFull = false; break; }
+      }
+      if (colFull) colsToClear.push(c);
+    }
+
+    let titanPoints = 0;
+    const cellsToEmpty = new Set<string>(); // Folosim Set ca să nu dublăm celulele la intersecții
+
+    rowsToClear.forEach(r => {
+      for (let c = 0; c < this.size; c++) cellsToEmpty.add(`${r},${c}`);
+    });
+    colsToClear.forEach(c => {
+      for (let r = 0; r < this.size; r++) cellsToEmpty.add(`${r},${c}`);
+    });
+
+    cellsToEmpty.forEach(coord => {
+      const [r, c] = coord.split(',').map(Number);
+      const val = this.cells[r][c];
+
+      // Colectăm datele pentru explozie
+      destroyedCells.push({
+        x: c * this.cellSize,
+        y: r * this.cellSize,
+        color: val === -1 ? "#ff00ff" : "#00ffff"
+      });
+
+      if (val === -1) {
+        this.cells[r][c] = 1; // Titanul devine normal, nu dispare
+        titanPoints += 50;
+      } else {
+        this.cells[r][c] = 0;
+      }
+    });
+
+    const totalCleared = rowsToClear.length + colsToClear.length;
+    let points = totalCleared * 100;
+    if (totalCleared >= 2) points *= 2; 
+
+    return { points: points + titanPoints, totalCleared, destroyedCells };
+  }
+
+  verifica_validitate(shape: number[][], gridX: number, gridY: number): boolean {
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        if (shape[r][c] !== 0) {
+          const targetR = gridY + r;
+          const targetC = gridX + c;
+
+          // Verificăm marginile tablei
+          if (targetR < 0 || targetR >= this.size || targetC < 0 || targetC >= this.size) return false;
+          // Verificăm dacă locul e deja ocupat
+          if (this.cells[targetR][targetC] !== 0) return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  plaseaza_piesa(shape: number[][], gridX: number, gridY: number) {
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        if (shape[r][c] !== 0) {
+          this.cells[gridY + r][gridX + c] = shape[r][c];
+        }
+      }
+    }
+  }
+
+  poate_plasa_orice(piese: any[]): boolean {
+    return piese.some(piesa => {
+      for (let r = 0; r < this.size; r++) {
+        for (let c = 0; c < this.size; c++) {
+          if (this.verifica_validitate(piesa.shape, c, r)) return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  checkGeometryBonus(): number {
+    for (let r = 0; r <= 7; r++) {
+      for (let c = 0; c <= 7; c++) {
+        let isSquare = true;
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (this.cells[r + i][c + j] === 0) {
+              isSquare = false;
+              break;
+            }
+          }
+          if (!isSquare) break;
+        }
+        if (isSquare) return 500;
+      }
+    }
+    return 0;
+  }
+}
