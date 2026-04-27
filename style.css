@@ -24,7 +24,7 @@ body {
   touch-action: none;
 }
 
-/* Containerul principal */
+
 .game-container {
   background: var(--bg-panel);
   padding: 25px;
@@ -36,7 +36,7 @@ body {
   min-width: 420px;
 }
 
-/* Overlay pentru Start și Game Over */
+
 .overlay {
   position: absolute;
   inset: 0;
@@ -50,7 +50,7 @@ body {
   padding: 20px;
 }
 
-/* Titlu cu efect de strălucire */
+
 h1 {
   font-weight: 700;
   letter-spacing: 5px;
@@ -68,7 +68,7 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* Butonul de Start */
+
 #startButton {
   background: transparent;
   color: var(--neon-cyan);
@@ -91,7 +91,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* Statistici High Score în meniu */
+
 .hs-text {
   color: var(--neon-magenta);
   font-size: 0.9rem;
@@ -100,7 +100,7 @@ h1 {
   text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
 }
 
-/* Panoul de stats în timpul jocului */
+
 .stats {
   background: rgba(0, 0, 0, 0.6);
   padding: 12px;
@@ -118,7 +118,7 @@ h1 {
   text-shadow: 0 0 5px #fff;
 }
 
-/* Wrapper-ul pentru Canvas */
+
 .canvas-wrapper {
   position: relative;
   display: inline-block;
@@ -135,7 +135,7 @@ canvas {
   cursor: crosshair;
 }
 
-/* Efectul de scanline (linii TV vechi) */
+
 .game-container::after {
   content: "";
   position: absolute;
@@ -147,7 +147,7 @@ canvas {
   border-radius: 16px;
 }
 
-/* Animație simplă pentru titlu */
+
 @keyframes pulse {
   0% { opacity: 1; }
   50% { opacity: 0.7; }
