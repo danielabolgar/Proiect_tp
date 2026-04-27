@@ -5,9 +5,9 @@ export class Block {
   y: number;
 
   constructor(shape: number[][], color: string) {
-    this.shape = shape; // Exemplu: [[1, 1], [1, 1]] pentru un pătrat 2x2
+    this.shape = shape; 
     this.color = color;
-    this.x = 0; // Poziția inițială
+    this.x = 0;
     this.y = 0;
   }
 
